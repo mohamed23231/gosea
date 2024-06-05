@@ -56,6 +56,30 @@ const SeaTripTable = () => {
       boat: "ssffg",
       time: "asdasdsad",
     },
+    {
+      barcode: 5555555,
+      operation: "تحت الماء",
+      captin: "mohamed",
+      customerName: "test",
+      boat: "ssffg",
+      time: "asdasdsad",
+    },
+    {
+      barcode: 5555555,
+      operation: "تحت الماء",
+      captin: "mohamed",
+      customerName: "test",
+      boat: "ssffg",
+      time: "asdasdsad",
+    },
+    {
+      barcode: 5555555,
+      operation: "تحت الماء",
+      captin: "mohamed",
+      customerName: "test",
+      boat: "ssffg",
+      time: "asdasdsad",
+    },
   ];
 
   return (

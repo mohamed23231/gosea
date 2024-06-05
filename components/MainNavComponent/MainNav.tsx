@@ -81,7 +81,7 @@ const MainNav = () => {
         <span className="font-bold text-lg">GO Sea</span>
       </div>
 
-      <div className="flex items-center">
+      {/* <div className="flex items-center">
         <div className="hidden md:flex md:justify-between md:bg-transparent">
           {navList.map(({ icon, title }, index) => {
             return (
@@ -96,7 +96,7 @@ const MainNav = () => {
             );
           })}
         </div>
-      </div>
+      </div> */}
 
       {isOpen && (
         <div className="z-10 fixed inset-0 transition-opacity">

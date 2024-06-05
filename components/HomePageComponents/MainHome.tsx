@@ -11,27 +11,29 @@ const MainHome = () => {
   };
   return (
     <>
-      <div className="w-1/4">
-        <MainNav />
-      </div>
-      <div className="main flex container mx-auto  w-3/4   ">
-        <div className="w-1/3">
-          <PayInfo />
+      <div className="flex ">
+        <div className="w-1/4 my-4  overflow-hidden">
+          <MainNav />
         </div>
-        <div className="w-2/3 ">
-          <div className="main-btns my-4">
-            <MainBtn />
+        <div className="main flex    w-3/4   ">
+          <div className="w-1/3">
+            <PayInfo />
           </div>
-          <div className="main-forms flex">
-            <div className="w-1/2 ml-4">
-              <PrintForms formSubmit={test} formName={"طباعة تذكرة"} />
+          <div className="w-2/3 ">
+            <div className="main-btns my-4">
+              <MainBtn />
             </div>
-            <div className="w-1/2">
-              <PrintForms formSubmit={test} formName={"طباعة فاتورة"} />
+            <div className="main-forms flex">
+              <div className="w-1/2 ml-4">
+                <PrintForms formSubmit={test} formName={"طباعة تذكرة"} />
+              </div>
+              <div className="w-1/2">
+                <PrintForms formSubmit={test} formName={"طباعة فاتورة"} />
+              </div>
             </div>
+            <LatestTrips />
+            <SeaTripTable />
           </div>
-          <LatestTrips />
-          <SeaTripTable />
         </div>
       </div>
     </>
