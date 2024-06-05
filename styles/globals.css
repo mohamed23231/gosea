@@ -8,6 +8,12 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+html {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  background-color: #f9fafb;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
