@@ -5,7 +5,11 @@ import { PringInputInterFace } from "@app_types/interfaces/forms_schemas/PringIn
 import { PrintSchema } from "@zod_schemas/PrintSchema";
 import GenericFormControl from "@components/form/GenericInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFile,
+  faMoneyBill,
+  faTicket,
+} from "@fortawesome/free-solid-svg-icons";
 import { Spinner } from "@nextui-org/spinner";
 const PrintForms = ({ formName, formSubmit }: any) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,18 +40,15 @@ const PrintForms = ({ formName, formSubmit }: any) => {
               >
                 {formName}
               </label>
-              <span
+              <FontAwesomeIcon
                 style={{
-                  backgroundColor: "#0086C9",
-                  borderColor: "#B9E6FE",
-                  //   fontSize: "16px",
+                  backgroundColor: "#b9e6fe",
+                  borderColor: "#e0f2fe",
+                  color: "#0086c9",
                 }}
-                className={
-                  " h-7	w-7   border-4 rounded-full flex justify-center items-center "
-                }
-              >
-                <FontAwesomeIcon className="block" icon={faFile} />
-              </span>
+                className={" mx-1 block p-2 rounded-full  border-3 "}
+                icon={faTicket}
+              />
             </div>
           </div>
           <input

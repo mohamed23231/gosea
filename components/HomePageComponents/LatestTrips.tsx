@@ -25,7 +25,7 @@ const LatestTrips = () => {
           <button
             onClick={test}
             type="button"
-            className=" border border-gray-300 text-black bg-white focus:ring-4 focus:border-gray-500 hover:text-white hover:bg-gray-400 font-medium rounded-lg text-sm px-5 py-4 text-center me-2 "
+            className=" border border-gray-300 text-black bg-white  focus:ring-gray-500 dark:focus:ring-gray-500 dark:focus:border-gray-500 focus:border-gray-500 hover:text-white hover:bg-gray-400 font-medium rounded-lg text-sm px-5 py-4 text-center me-2 "
           >
             <span className="mx-1">
               <FontAwesomeIcon className="" icon={faFile} />
