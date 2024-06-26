@@ -30,74 +30,74 @@ export default function App({ Component, pageProps }: AppProps) {
     });
   };
 
-  useEffect(() => {
-    const checkTokenExpiration = async () => {
-      const refreshToken = localStorage.getItem("refreshToken");
-      const accessToken = localStorage.getItem("accessToken");
+  // useEffect(() => {
+  //   const checkTokenExpiration = async () => {
+  //     const refreshToken = localStorage.getItem("refreshToken");
+  //     const accessToken = localStorage.getItem("accessToken");
 
-      if (!accessToken || !refreshToken) {
-        console.error(
-          "Access token or refresh token doesn't exist in localStorage."
-        );
-        clearTokensAndRedirect();
-        return;
-      }
+  //     if (!accessToken || !refreshToken) {
+  //       console.error(
+  //         "Access token or refresh token doesn't exist in localStorage."
+  //       );
+  //       clearTokensAndRedirect();
+  //       return;
+  //     }
 
-      const decodedAccessToken = jwtDecode(accessToken) as DecodedToken;
-      const decodedRefreshToken = jwtDecode(refreshToken) as DecodedToken;
+  //     const decodedAccessToken = jwtDecode(accessToken) as DecodedToken;
+  //     const decodedRefreshToken = jwtDecode(refreshToken) as DecodedToken;
 
-      const accessTokenExp = parseInt(
-        decodedAccessToken?.exp?.toString() || ""
-      );
-      const refreshTokenExp = parseInt(
-        decodedRefreshToken?.exp?.toString() || ""
-      );
+  //     const accessTokenExp = parseInt(
+  //       decodedAccessToken?.exp?.toString() || ""
+  //     );
+  //     const refreshTokenExp = parseInt(
+  //       decodedRefreshToken?.exp?.toString() || ""
+  //     );
 
-      if (isNaN(accessTokenExp) || isNaN(refreshTokenExp)) {
-        console.error("Expiration time is not a valid number.");
-        clearTokensAndRedirect();
-        return;
-      }
+  //     if (isNaN(accessTokenExp) || isNaN(refreshTokenExp)) {
+  //       console.error("Expiration time is not a valid number.");
+  //       clearTokensAndRedirect();
+  //       return;
+  //     }
 
-      const expirationPlusThirtyMinutes =
-        refreshTokenExp * 1000 + 30 * 60 * 1000;
-      const currentTime = new Date().getTime();
+  //     const expirationPlusThirtyMinutes =
+  //       refreshTokenExp * 1000 + 30 * 60 * 1000;
+  //     const currentTime = new Date().getTime();
 
-      if (currentTime > expirationPlusThirtyMinutes) {
-        refreshAccessToken(refreshToken);
-      }
-    };
+  //     if (currentTime > expirationPlusThirtyMinutes) {
+  //       refreshAccessToken(refreshToken);
+  //     }
+  //   };
 
-    checkTokenExpiration();
-  }, []);
+  //   checkTokenExpiration();
+  // }, []);
 
-  const clearTokensAndRedirect = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("tokenExpiration");
-    router.push("/auth/login");
-  };
-  if (typeof window !== "undefined") {
-    // Check if user role is available in local storage and dispatch action to set it in Redux store
-    const userRoleFromLocalStorage = localStorage.getItem("userRole");
-    if (userRoleFromLocalStorage) {
-      store.dispatch(setUserRole(userRoleFromLocalStorage));
-    }
-  }
+  // const clearTokensAndRedirect = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("refreshToken");
+  //   localStorage.removeItem("tokenExpiration");
+  //   router.push("/auth/login");
+  // };
+  // if (typeof window !== "undefined") {
+  //   // Check if user role is available in local storage and dispatch action to set it in Redux store
+  //   const userRoleFromLocalStorage = localStorage.getItem("userRole");
+  //   if (userRoleFromLocalStorage) {
+  //     store.dispatch(setUserRole(userRoleFromLocalStorage));
+  //   }
+  // }
 
-  const refreshAccessToken = async (refreshToken: string) => {
-    try {
-      const res = await axios.post(`${API_BASE_URL}/auth/token/refresh`, {
-        refresh: refreshToken,
-      });
-      if (res.data && res.data.access) {
-        localStorage.setItem("accessToken", res.data.access);
-      }
-    } catch (error) {
-      console.error("Error refreshing token:", error);
-      clearTokensAndRedirect();
-    }
-  };
+  // const refreshAccessToken = async (refreshToken: string) => {
+  //   try {
+  //     const res = await axios.post(`${API_BASE_URL}/auth/token/refresh`, {
+  //       refresh: refreshToken,
+  //     });
+  //     if (res.data && res.data.access) {
+  //       localStorage.setItem("accessToken", res.data.access);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error refreshing token:", error);
+  //     clearTokensAndRedirect();
+  //   }
+  // };
 
   return (
     <>
