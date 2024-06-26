@@ -1,6 +1,6 @@
 import "@styles/globals.css";
 import Navbar from "@components/Navbar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -11,6 +11,7 @@ import { setUserRole } from "../store/userSlice";
 import { Toaster } from "react-hot-toast"; // Import Toaster
 import { AppProps } from "next/app";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import MainNav from "@components/MainNavComponent/MainNav";
 
 interface DecodedToken {
   exp?: number; // Make exp optional to handle potential undefined
@@ -18,6 +19,16 @@ interface DecodedToken {
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const test = () => {
+    console.log("hello");
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen((prev) => {
+      return !prev;
+    });
+  };
 
   useEffect(() => {
     const checkTokenExpiration = async () => {
@@ -92,8 +103,14 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Provider store={store}>
         <Toaster position="bottom-left" /> {/* Add Toaster here */}
-        <Navbar />
-        <Component {...pageProps} />
+        <div className="flex">
+          <div className="w-2/12 my-4 mx-auto overflow-hidden">
+            <MainNav isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+          </div>
+          <div className="main flex w-10/12">
+            <Component {...pageProps} />
+          </div>
+        </div>
       </Provider>
     </>
   );

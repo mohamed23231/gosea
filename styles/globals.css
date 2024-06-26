@@ -11,7 +11,8 @@
 html {
   direction: rtl;
   unicode-bidi: bidi-override;
-  background-color: #f9fafb;
+  background-color: #dddddd;
+  font-family: "Montserrat Arabic", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -60,4 +61,10 @@ html {
   .text-balance {
     text-wrap: balance;
   }
+}
+@font-face {
+  font-family: "Montserrat Arabic";
+  src: url("../fonts/Montserrat-Arabic-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
