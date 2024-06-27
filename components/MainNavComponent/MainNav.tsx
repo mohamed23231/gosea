@@ -53,8 +53,11 @@ const MainNav = ({ isOpen, toggleSidebar }: any) => {
         <nav className="mt-4">
           <ul>
             {/* Each link with icon */}
-            <li className="  p-4 text-gray-600 hover:bg-gray-100 cursor-pointer">
-              <Link href={"/homepage"} className="flex items-center">
+            <Link
+              href={"/homepage"}
+              className="flex items-center p-4 text-gray-600 hover:bg-gray-100 cursor-pointer"
+            >
+              <li className="  flex items-center">
                 <span className="material-icons  ml-3">
                   <FiHome />
                 </span>
@@ -62,31 +65,34 @@ const MainNav = ({ isOpen, toggleSidebar }: any) => {
                   {" "}
                   الشاشة الرئيسية
                 </p>
-              </Link>
-            </li>
-            <li className="flex items-center p-4 text-gray-600 hover:bg-gray-100 cursor-pointer">
-              <Link href={"/"} className="flex items-center">
+              </li>
+            </Link>
+            <Link
+              href={"/statistics"}
+              className="flex items-center p-4 text-gray-600 hover:bg-gray-100 cursor-pointer"
+            >
+              <li className="flex items-center">
                 <span className="material-icons  ml-3">
                   <FiBarChart />
                 </span>
                 <p className="" style={{ color: "#34485F" }}>
                   الإحصاءات{" "}
                 </p>
-              </Link>
-            </li>
-            <li className="flex items-center p-4 text-gray-600 hover:bg-gray-100 cursor-pointer">
-              <Link
-                href={"/general-queue-captain"}
-                className="flex items-center"
-              >
+              </li>
+            </Link>
+            <Link
+              href={"/general-queue-captain"}
+              className=" flex items-center p-4 text-gray-600 hover:bg-gray-100 cursor-pointer"
+            >
+              <li className="flex items-center">
                 <span className="material-icons  ml-3">
                   <FiBarChart />
                 </span>
                 <p className="" style={{ color: "#34485F" }}>
                   كابتن الطابور العام{" "}
                 </p>
-              </Link>
-            </li>
+              </li>
+            </Link>
           </ul>
         </nav>
       </div>

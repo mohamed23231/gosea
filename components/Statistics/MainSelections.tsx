@@ -1,24 +1,47 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faShip, faUser, faList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
-const MainSelections = () => {
+const MainSelections = ({
+  setGeneralQueueHandler,
+  setTripHandler,
+  generalQueueCaptainHandler,
+}: any) => {
   return (
     <div className="space-y-2">
-      <button className="w-full text-right py-2 px-4 bg-gray-100 rounded">
+      <button
+        onClick={generalQueueCaptainHandler}
+        className="w-full text-right py-2 px-4 bg-gray-100 rounded"
+      >
         <FontAwesomeIcon
-          className={"mx-1"}
+          className={"ml-3 "}
           style={{ color: "#0BA5EC" }}
           icon={faUser}
         />
         {/* No need for prefix here */}
-        احتياجات خاصة{" "}
+        كباتن الطابور العام
       </button>
-      <button className="w-full text-right py-2 px-4 bg-gray-100 rounded">
-        نتيجة
+      <button
+        onClick={setTripHandler}
+        className="w-full text-right py-2 px-4 bg-gray-100 rounded"
+      >
+        <FontAwesomeIcon
+          className={"ml-3 "}
+          style={{ color: "#0BA5EC" }}
+          icon={faShip}
+        />
+        رحلة
       </button>
-      <button className="w-full text-right py-2 px-4 bg-gray-100 rounded">
-        الطوائف العامة
+      <button
+        onClick={setGeneralQueueHandler}
+        className="w-full text-right py-2 px-4 bg-gray-100 rounded"
+      >
+        <FontAwesomeIcon
+          className={"ml-3 "}
+          style={{ color: "#0BA5EC" }}
+          icon={faList}
+        />
+        الطابور العام{" "}
       </button>
     </div>
   );
