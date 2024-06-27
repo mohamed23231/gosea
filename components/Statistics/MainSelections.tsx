@@ -6,12 +6,17 @@ const MainSelections = ({
   setGeneralQueueHandler,
   setTripHandler,
   generalQueueCaptainHandler,
+  generalQueue,
+  trip,
+  generalQueueCaptain,
 }: any) => {
   return (
     <div className="space-y-2">
       <button
         onClick={generalQueueCaptainHandler}
-        className="w-full text-right py-2 px-4 bg-gray-100 rounded"
+        className={`w-full text-right py-2 px-4 ${
+          generalQueueCaptain == true ? "bg-gray-100" : "bg-white"
+        }  rounded`}
       >
         <FontAwesomeIcon
           className={"ml-3 "}
@@ -23,7 +28,9 @@ const MainSelections = ({
       </button>
       <button
         onClick={setTripHandler}
-        className="w-full text-right py-2 px-4 bg-gray-100 rounded"
+        className={`w-full text-right py-2 px-4 ${
+          trip == true ? "bg-gray-100" : "bg-white"
+        }  rounded`}
       >
         <FontAwesomeIcon
           className={"ml-3 "}
@@ -34,7 +41,9 @@ const MainSelections = ({
       </button>
       <button
         onClick={setGeneralQueueHandler}
-        className="w-full text-right py-2 px-4 bg-gray-100 rounded"
+        className={`w-full text-right py-2 px-4 ${
+          generalQueue == true ? "bg-gray-100" : "bg-white"
+        }  rounded`}
       >
         <FontAwesomeIcon
           className={"ml-3 "}

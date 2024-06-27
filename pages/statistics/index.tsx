@@ -35,6 +35,9 @@ const index = () => {
       <div className="flex ">
         <div className=" min-w-1/6 max-w-[297px]">
           <MainSelections
+            generalQueue={generalQueue}
+            trip={trip}
+            generalQueueCaptain={generalQueueCaptain}
             setGeneralQueueHandler={setGeneralQueueHandler}
             setTripHandler={setTripHandler}
             generalQueueCaptainHandler={generalQueueCaptainHandler}

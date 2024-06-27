@@ -11,6 +11,8 @@ import {
   faTicket,
 } from "@fortawesome/free-solid-svg-icons";
 import { Spinner } from "@nextui-org/spinner";
+import { useRouter } from "next/router";
+
 const PrintForms = ({ formName, formSubmit }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -21,16 +23,25 @@ const PrintForms = ({ formName, formSubmit }: any) => {
   } = useForm<PringInputInterFace>({
     resolver: zodResolver(PrintSchema),
   });
+  const router = useRouter();
+
+  const onSubmit = async (data: PringInputInterFace) => {
+    setIsLoading(true);
+    try {
+      await formSubmit(data);
+      router.push("/print");
+    } catch (error) {
+      console.error(error);
+      // handle error appropriately
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white border rounded-lg p-2">
       <div className="info">{/* <div className="name">{formName}</div> */}</div>
-      <form
-        noValidate
-        onSubmit={handleSubmit(() => {
-          formSubmit();
-        })}
-      >
+      <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-6">
           <div className="input-info py-7">
             <div className="flex justify-between ">
