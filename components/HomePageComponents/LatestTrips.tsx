@@ -1,15 +1,19 @@
 import { faFile, faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Spinner } from "@nextui-org/spinner";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const LatestTrips = () => {
+const LatestTrips = ({ searchQueryState }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const test = () => {
     console.log("test");
   };
+
+  useEffect(() => {
+    searchQueryState(searchQuery);
+  }, [searchQuery]);
   return (
     <>
       <div className=" flex justify-start	 items-center bg-white container p-5 mt-10 mx-auto border rounded ">

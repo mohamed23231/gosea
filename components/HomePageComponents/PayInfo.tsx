@@ -3,9 +3,8 @@ import { faShip } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { GoPencil } from "react-icons/go";
 
-const PayInfo = () => {
+const PayInfo = ({ mainData }: any) => {
   const [searchQuery, setSearchQuery] = useState("");
-
   return (
     <>
       <div className="payment-info px-4">
@@ -18,7 +17,9 @@ const PayInfo = () => {
         <div className="mini-boats bg-white border rounded-lg p-2">
           <div style={{}} className="flex h-20	 justify-between ">
             <div className="info flex flex-col justify-between">
-              <p className="text-4xl font-bold">78</p>
+              <p className="text-4xl font-bold">
+                {mainData.boat_types ? `${mainData.boat_types[1].count}` : 0}
+              </p>
               <p style={{ color: "#415A77" }} className="text-sm font-semibold">
                 القوارب الصغير الجاهزة للإبحار
               </p>
@@ -39,9 +40,11 @@ const PayInfo = () => {
         <div className="mt-4 mini-boats bg-white border rounded-lg p-2">
           <div style={{}} className="flex h-20	 justify-between ">
             <div className="info flex flex-col justify-between">
-              <p className="text-4xl font-bold">78</p>
+              <p className="text-4xl font-bold">
+                {mainData.boat_types ? `${mainData.boat_types[0].count}` : 0}
+              </p>
               <p style={{ color: "#415A77" }} className="text-sm font-semibold">
-                القوارب الصغير الجاهزة للإبحار
+                قوارب النزهة الجاهزة للإبحار
               </p>
             </div>
             <div className="icon flex items-center">

@@ -2,13 +2,17 @@ import React from "react";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faUserCircle } from "@fortawesome/free-regular-svg-icons"; // Import from the "regular" icon pack
-import { faPeopleGroup, faShip } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPeopleGroup,
+  faShip,
+  faUserGroup,
+} from "@fortawesome/free-solid-svg-icons";
 
 const MainBtn = () => {
   return (
     <>
       {" "}
-      <div className="main-btns flex justify-between">
+      <div className="main-btns flex flex-wrap justify-between">
         <button
           type="button"
           className="text-gray-900 hover:text-white border border-gray-400 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
@@ -41,7 +45,7 @@ const MainBtn = () => {
             icon={faPeopleGroup}
           />
           {/* No need for prefix here */}
-          شخص
+          +11 شخص{" "}
         </button>
         <button
           type="button"
@@ -51,10 +55,10 @@ const MainBtn = () => {
           <FontAwesomeIcon
             className={"mx-1"}
             style={{ color: "#039855" }}
-            icon={faPeopleGroup}
+            icon={faUserGroup}
           />
           {/* No need for prefix here */}
-          شخص
+          10 اشخاص
         </button>
         <button
           type="button"
@@ -64,10 +68,9 @@ const MainBtn = () => {
           <FontAwesomeIcon
             className={"mx-1"}
             style={{ color: "#039855" }}
-            icon={faPeopleGroup}
+            icon={faUserGroup}
           />
-          {/* No need for prefix here */}
-          شخص
+          {/* No need for prefix here */}9 اشخاص
         </button>
         <button
           type="button"
