@@ -26,16 +26,8 @@ const PrintForms = ({ formName, formSubmit }: any) => {
   const router = useRouter();
 
   const onSubmit = async (data: PringInputInterFace) => {
-    setIsLoading(true);
-    try {
-      await formSubmit(data);
-      router.push("/print");
-    } catch (error) {
-      console.error(error);
-      // handle error appropriately
-    } finally {
-      setIsLoading(false);
-    }
+    // console.log(data);
+    formSubmit(data.barcode);
   };
 
   return (

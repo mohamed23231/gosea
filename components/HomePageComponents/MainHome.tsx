@@ -5,12 +5,25 @@ import PayInfo from "./PayInfo";
 import PrintForms from "./PrintForms";
 import SeaTripTable from "./SeaTripTable";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "@configs/envs";
+import axios from "axios";
+import { useRouter } from "next/router";
+import ConfirmDialogArabic from "@components/utilities/ConfirmDialogArabic";
 
 const MainHome = ({ mainData }: any) => {
+  const router = useRouter();
+
   console.log(mainData);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [tripTable, setTripTable] = useState([]);
   const [latestTripSearch, setLatestTripSearch] = useState("");
+  const [printInvoiceForm, setPrintInvoiceForm] = useState<any>(null);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+
+  const handleCancelDialog = () => {
+    setDialogOpen(false);
+  };
 
   useEffect(() => {
     if (mainData) {
@@ -27,6 +40,25 @@ const MainHome = ({ mainData }: any) => {
     });
   };
   console.log(latestTripSearch);
+
+  const printInvoise = async (barcode: any) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/admin_marsa/PrintInvoice?barcode=${barcode}`
+      );
+      console.log(response);
+      const printData = response.data;
+      router.push({
+        pathname: "/print",
+        query: { printInvoiceForm: JSON.stringify(printData) },
+      });
+    } catch (error: any) {
+      setDialogMessage(error?.response?.data?.message);
+      setDialogOpen(true);
+      console.log("error from fetching home data", error);
+    } finally {
+    }
+  };
 
   return (
     <>
@@ -47,7 +79,10 @@ const MainHome = ({ mainData }: any) => {
                 <PrintForms formSubmit={test} formName={"طباعة تذكرة"} />
               </div>
               <div className="lg:w-1/3 w-full">
-                <PrintForms formSubmit={test} formName={"طباعة فاتورة"} />
+                <PrintForms
+                  formSubmit={printInvoise}
+                  formName={"طباعة فاتورة"}
+                />
               </div>
               <div className="lg:w-1/3 w-full">
                 <PrintForms formSubmit={test} formName={"تحضير القوارب"} />
@@ -61,6 +96,11 @@ const MainHome = ({ mainData }: any) => {
           </div>
         </div>
       </div>
+      <ConfirmDialogArabic
+        open={isDialogOpen}
+        message={dialogMessage}
+        onCancel={handleCancelDialog}
+      />
     </>
   );
 };

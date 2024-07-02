@@ -1,13 +1,23 @@
-// pages/print.tsx
-import React, { useRef } from "react";
+import { useRouter } from "next/router";
+import React, { useRef, useEffect, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 
 const PrintPage = () => {
+  const router = useRouter();
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
+  const [printInvoiceForm, setPrintInvoiceForm] = useState(null);
+
+  useEffect(() => {
+    if (router.query.printInvoiceForm) {
+      setPrintInvoiceForm(JSON.parse(router.query.printInvoiceForm as string));
+    }
+  }, [router.query.printInvoiceForm]);
+
+  console.log("from print page", printInvoiceForm);
   return (
     <div className="] flex items-center justify-center  ">
       <div className="space-y-6">
