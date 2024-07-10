@@ -8,7 +8,7 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 
-const MainBtn = () => {
+const MainBtn = ({ BtnsClick }: any) => {
   return (
     <>
       {" "}
@@ -22,6 +22,9 @@ const MainBtn = () => {
           تعديل فاتورة
         </button>
         <button
+          onClick={() => {
+            BtnsClick("SPNEEDBOAT", 1);
+          }}
           type="button"
           style={{ borderColor: "#0BA5EC" }}
           className="text-gray-900 hover:text-white border border-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
@@ -35,6 +38,9 @@ const MainBtn = () => {
           احتياجات خاصة{" "}
         </button>
         <button
+          onClick={() => {
+            BtnsClick("Mo3tamr", 11);
+          }}
           type="button"
           style={{ borderColor: "#039855" }}
           className="text-gray-900 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"
@@ -48,6 +54,9 @@ const MainBtn = () => {
           +11 شخص{" "}
         </button>
         <button
+          onClick={() => {
+            BtnsClick("Mo3tamr", 10);
+          }}
           type="button"
           style={{ borderColor: "#039855" }}
           className="text-gray-900 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"
@@ -61,6 +70,9 @@ const MainBtn = () => {
           10 اشخاص
         </button>
         <button
+          onClick={() => {
+            BtnsClick("Mo3tamr", 9);
+          }}
           type="button"
           style={{ borderColor: "#039855" }}
           className="text-gray-900 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"
@@ -73,6 +85,9 @@ const MainBtn = () => {
           {/* No need for prefix here */}9 اشخاص
         </button>
         <button
+          onClick={() => {
+            BtnsClick("SMBOAT", 1);
+          }}
           type="button"
           style={{ borderColor: "#D92D20" }}
           className="text-gray-900 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
@@ -86,6 +101,9 @@ const MainBtn = () => {
           قارب صغير{" "}
         </button>
         <button
+          onClick={() => {
+            BtnsClick("SPBOAT", 1);
+          }}
           type="button"
           style={{ borderColor: "#0BA5EC" }}
           className="text-gray-900 hover:text-white border border-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"

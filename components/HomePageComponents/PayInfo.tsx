@@ -1,10 +1,79 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShip } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { faShip, faPrint, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useRef, useState } from "react";
 import { GoPencil } from "react-icons/go";
+import axios from "axios";
+import { API_BASE_URL } from "@configs/envs";
 
-const PayInfo = ({ mainData }: any) => {
+const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<any>(null);
+  useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault(); // Prevent form submission on Enter key
+        setSearchQuery(""); // Clear the search query on Enter key press
+      } else {
+        setSearchQuery((prevQuery) => prevQuery + event.key); // Append the key press to the search query
+      }
+    };
+
+    window.addEventListener("keypress", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keypress", handleKeyPress);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus(); // Focus the input field when the component mounts
+    }
+  }, []);
+
+  const handleSearch = () => {
+    inputRef.current.value = searchQuery;
+    printTicket(searchQuery);
+    setSearchQuery("");
+    // Implement search action here
+
+    console.log("Search triggered:", searchQuery);
+  };
+
+  const searchBarCode = () => {
+    // Implement print action here
+    console.log("Print triggered");
+  };
+
+  const handlePrint = () => {
+    // Implement print action here
+    console.log("Print triggered");
+  };
+
+  const printTicket = async (ticket: any) => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${API_BASE_URL}/admin_marsa/GETOrder?barcode=${ticket}`
+      );
+      console.log(response);
+      setData(response.data);
+      console.log(data.order);
+      // router.push({
+      //   pathname: "/print",
+      //   query: { printInvoiceForm: JSON.stringify(printData) },
+      // });
+    } catch (error: any) {
+      setDialogMessage(error?.response?.data?.message);
+      setDialogOpen(true);
+      console.log("error from fetching home data", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="payment-info px-4">
@@ -71,29 +140,27 @@ const PayInfo = ({ mainData }: any) => {
             >
               هذا النص هو مثال لنص يمكن أن يستبدل فيمولد النص
             </p>
-            <form className="my-3">
+            <form className="my-3" onSubmit={(e) => e.preventDefault()}>
               <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
                 Search
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round" // Corrected property name
-                      strokeLinejoin="round" // Corrected property name
-                      strokeWidth="2" // Corrected property name
-                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                    />
-                  </svg>
+                <div className="absolute inset-y-0 end-2 flex items-center pe-3">
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="w-4 h-4 text-gray-500 dark:text-gray-400 cursor-pointer"
+                    onClick={handleSearch}
+                  />
+                </div>
+                <div className="absolute inset-y-0 end-10 flex items-center pe-3">
+                  <FontAwesomeIcon
+                    icon={faPrint}
+                    className="w-4 h-4 text-gray-500 dark:text-gray-400 cursor-pointer"
+                    onClick={handlePrint}
+                  />
                 </div>
                 <input
+                  ref={inputRef}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   type="search"
@@ -106,79 +173,93 @@ const PayInfo = ({ mainData }: any) => {
           </div>
         </div>
         <div className="invoice-info">
-          <div className="flex justify-between items-center">
-            <div>
-              <p style={{ fontSize: "15px" }} className="font-semibold my-2">
-                تفاصيل الفاتورة{" "}
-              </p>
-              <p
-                style={{ fontSize: "12px", color: "#677B92" }}
-                className="font-semibold my-2"
-              >
-                يمكنك تعديل بيانات الفاتورة{" "}
-              </p>
-            </div>
-            <div>
-              <button className=" flex items-center text-gray-900 hover:text-white border border-gray-400 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">
-                <GoPencil />
-                تعديل البيانات
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between my-4">
-            <p style={{ color: "#677B92" }}>الحالة</p>
-            <span
-              className="border rounded-lg px-2 py-1"
-              style={{ backgroundColor: "#E0F2FE" }}
-            >
-              تحت الاجراء{" "}
-            </span>
-          </div>
-          <div className="my-4">
-            <p style={{ color: "#677B92" }}>الاسم</p>
-            <p style={{ fontSize: "15px" }} className="font-semibold my-2">
-              تفاصيل الفاتورة{" "}
-            </p>
-          </div>
-          <div className="my-4">
-            <p style={{ color: "#677B92" }}>رقم الجوال</p>
-            <p style={{ fontSize: "15px" }} className="font-semibold my-2">
-              0556454456{" "}
-            </p>
-          </div>
-          <div className="my-4">
-            <p style={{ color: "#677B92" }}>عدد الاشخاص</p>
-            <p style={{ fontSize: "15px" }} className="font-semibold my-2">
-              10{" "}
-            </p>
-          </div>
-          <div className="my-4">
-            <p style={{ color: "#677B92" }}>المدة</p>
-            <p style={{ fontSize: "15px" }} className="font-semibold my-2">
-              المعتمرين | 30 دقيقة{" "}
-            </p>
-          </div>
-          <div className="my-4">
-            <p style={{ color: "#677B92" }}>نوع القارب</p>
-            <p style={{ fontSize: "15px" }} className="font-semibold my-2">
-              قارب صغير{" "}
-            </p>
-          </div>
-          <div className="my-4">
-            <p style={{ color: "#677B92" }}>المجموع</p>
-            <p
-              style={{ fontSize: "15px", color: "#027A48" }}
-              className="font-bold my-2"
-            >
-              500.00{" "}
-            </p>
-          </div>
-          <div className="my-4">
-            <p style={{ color: "#677B92" }}>التحضير اليومي</p>
-            <p style={{ fontSize: "15px" }} className="font-semibold my-2">
-              0{" "}
-            </p>
-          </div>
+          {data && (
+            <>
+              {" "}
+              <div className="flex justify-between items-center">
+                <div>
+                  <p
+                    style={{ fontSize: "15px" }}
+                    className="font-semibold my-2"
+                  >
+                    تفاصيل الفاتورة{" "}
+                  </p>
+                  <p
+                    style={{ fontSize: "12px", color: "#677B92" }}
+                    className="font-semibold my-2"
+                  >
+                    يمكنك تعديل بيانات الفاتورة{" "}
+                  </p>
+                </div>
+                <div>
+                  <button className=" flex items-center text-gray-900 hover:text-white border border-gray-400 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">
+                    <GoPencil />
+                    تعديل البيانات
+                  </button>
+                </div>
+              </div>
+              <div className="flex justify-between my-4">
+                <p style={{ color: "#677B92" }}>الحالة</p>
+                <span
+                  className="border rounded-lg px-2 py-1"
+                  style={{ backgroundColor: "#E0F2FE" }}
+                >
+                  تذكره{" "}
+                </span>
+              </div>
+              <div className="my-4">
+                <p style={{ color: "#677B92" }}>الاسم</p>
+                <p style={{ fontSize: "15px" }} className="font-semibold my-2">
+                  {data.order.client_name}
+                </p>
+              </div>
+              <div className="my-4">
+                <p style={{ color: "#677B92" }}>رقم الجوال</p>
+                <p style={{ fontSize: "15px" }} className="font-semibold my-2">
+                  {data.order.client_phone ?? "لا يوجد"}
+                </p>
+              </div>
+              <div className="my-4">
+                <p style={{ color: "#677B92" }}>عدد الاشخاص</p>
+                <p style={{ fontSize: "15px" }} className="font-semibold my-2">
+                  {data.order.peoples}
+                </p>
+              </div>
+              <div className="my-4">
+                <p style={{ color: "#677B92" }}>المدة</p>
+                <p style={{ fontSize: "15px" }} className="font-semibold my-2">
+                  {data.order.time_slot}
+                </p>
+              </div>
+              <div className="my-4">
+                <p style={{ color: "#677B92" }}>نوع القارب</p>
+                <p style={{ fontSize: "15px" }} className="font-semibold my-2">
+                  {data.order.boat_type}
+                </p>
+              </div>
+              <div className="my-4">
+                <p style={{ color: "#677B92" }}>أسم القارب</p>
+                <p style={{ fontSize: "15px" }} className="font-semibold my-2">
+                  {data.order.boat}
+                </p>
+              </div>
+              <div className="my-4">
+                <p style={{ color: "#677B92" }}>المجموع</p>
+                <p
+                  style={{ fontSize: "15px", color: "#027A48" }}
+                  className="font-bold my-2"
+                >
+                  {data.order.paid}
+                </p>
+              </div>
+              {/* <div className="my-4">
+                <p style={{ color: "#677B92" }}>التحضير اليومي</p>
+                <p style={{ fontSize: "15px" }} className="font-semibold my-2">
+                  0{" "}
+                </p>
+              </div> */}
+            </>
+          )}
         </div>
       </div>
     </>

@@ -76,7 +76,7 @@ const SeaTripTable = ({ tripTable, searchResult }: any) => {
                 القارب
               </th>
               <th scope="col" className="px-6 py-3 min-w-[114px]">
-                كمية{" "}
+                الأشخاص
               </th>
               <th scope="col" className="px-6 py-3 min-w-[190px] ">
                 وقت اخر اجراء{" "}
@@ -107,6 +107,8 @@ const SeaTripTable = ({ tripTable, searchResult }: any) => {
                         ? "bg-red-300"
                         : trip.status === "Rejected"
                         ? "bg-red-300"
+                        : trip.status === "Accepted"
+                        ? "bg-green-300"
                         : ""
                     }`}
                   >
@@ -118,6 +120,8 @@ const SeaTripTable = ({ tripTable, searchResult }: any) => {
                           ? "bg-red-600"
                           : trip.status === "Rejected"
                           ? "bg-red-600"
+                          : trip.status === "Accepted"
+                          ? "bg-green-800"
                           : ""
                       } rounded-full`}
                     ></div>
@@ -129,6 +133,8 @@ const SeaTripTable = ({ tripTable, searchResult }: any) => {
                           ? "text-red-600"
                           : trip.status === "Rejected"
                           ? "text-red-600"
+                          : trip.status === "Accepted"
+                          ? "text-green-800"
                           : ""
                       }`}
                     >
@@ -159,7 +165,7 @@ const SeaTripTable = ({ tripTable, searchResult }: any) => {
                 <td className="px-6 py-4">{trip.client_name}</td>
                 <td className="px-6 py-4">{trip.client_phone}</td>
                 <td className="px-6 py-4">{trip.boat}</td>
-                <td className="px-6 py-4">x</td>
+                <td className="px-6 py-4">{trip.peoples}</td>
                 <td className="px-6 py-4">{formatDate(trip.updated_at)}</td>
                 <td className="px-6 py-4">{trip.time_slot}</td>
                 <td className="px-6 py-4">{formatDate(trip.created_at)}</td>

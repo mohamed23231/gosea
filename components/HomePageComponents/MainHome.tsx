@@ -10,7 +10,14 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import ConfirmDialogArabic from "@components/utilities/ConfirmDialogArabic";
 
-const MainHome = ({ mainData }: any) => {
+const MainHome = ({
+  mainData,
+  BtnsClick,
+  setDialogOpen,
+  setDialogMessage,
+  isDialogOpen,
+  dialogMessage,
+}: any) => {
   const router = useRouter();
 
   console.log(mainData);
@@ -18,8 +25,10 @@ const MainHome = ({ mainData }: any) => {
   const [tripTable, setTripTable] = useState([]);
   const [latestTripSearch, setLatestTripSearch] = useState("");
   const [printInvoiceForm, setPrintInvoiceForm] = useState<any>(null);
-  const [isDialogOpen, setDialogOpen] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState("");
+  // const [isDialogOpen, setDialogOpen] = useState(false);
+  // const [dialogMessage, setDialogMessage] = useState("");
+  const [isLoadingPrintInvoice, setIsLoadingPrintInvoice] = useState(false);
+  const [isLoadingPrintTicket, setIsLoadingPrintTicket] = useState(false);
 
   const handleCancelDialog = () => {
     setDialogOpen(false);
@@ -43,6 +52,7 @@ const MainHome = ({ mainData }: any) => {
 
   const printInvoise = async (barcode: any) => {
     try {
+      setIsLoadingPrintInvoice(true);
       const response = await axios.get(
         `${API_BASE_URL}/admin_marsa/PrintInvoice?barcode=${barcode}`
       );
@@ -57,6 +67,28 @@ const MainHome = ({ mainData }: any) => {
       setDialogOpen(true);
       console.log("error from fetching home data", error);
     } finally {
+      setIsLoadingPrintInvoice(false);
+    }
+  };
+
+  const printTicket = async (ticket: any) => {
+    try {
+      setIsLoadingPrintTicket(true);
+      const response = await axios.get(
+        `${API_BASE_URL}/admin_marsa/GETOrder?barcode=${ticket}`
+      );
+      console.log(response);
+      const printData = response.data;
+      router.push({
+        pathname: "/print",
+        query: { printInvoiceForm: JSON.stringify(printData) },
+      });
+    } catch (error: any) {
+      setDialogMessage(error?.response?.data?.message);
+      setDialogOpen(true);
+      console.log("error from fetching home data", error);
+    } finally {
+      setIsLoadingPrintTicket(false);
     }
   };
 
@@ -68,24 +100,39 @@ const MainHome = ({ mainData }: any) => {
         </div> */}
         <div className="main flex flex-wrap w-full">
           <div className="lg:w-1/3 w-full ">
-            <PayInfo mainData={mainData} />
+            <PayInfo
+              mainData={mainData}
+              setDialogOpen={setDialogOpen}
+              setDialogMessage={setDialogMessage}
+            />
           </div>
           <div className="w-2/3  ">
             <div className="main-btns my-4">
-              <MainBtn />
+              <MainBtn BtnsClick={BtnsClick} />
             </div>
             <div className="main-forms flex flex-wrap lg:flex-nowrap">
               <div className="lg:w-1/3 w-full lg:ml-4">
-                <PrintForms formSubmit={test} formName={"طباعة تذكرة"} />
-              </div>
-              <div className="lg:w-1/3 w-full">
                 <PrintForms
-                  formSubmit={printInvoise}
-                  formName={"طباعة فاتورة"}
+                  isLoading={isLoadingPrintTicket}
+                  formSubmit={printTicket}
+                  formName={"طباعة تذكرة"}
+                  buttoneName="طباعة"
                 />
               </div>
               <div className="lg:w-1/3 w-full">
-                <PrintForms formSubmit={test} formName={"تحضير القوارب"} />
+                <PrintForms
+                  isLoading={isLoadingPrintInvoice}
+                  formSubmit={printInvoise}
+                  formName={"طباعة فاتورة"}
+                  buttoneName="طباعة"
+                />
+              </div>
+              <div className="lg:w-1/3 w-full">
+                <PrintForms
+                  formSubmit={test}
+                  formName={"تحضير القوارب"}
+                  buttoneName="تحضير"
+                />
               </div>
             </div>
             <LatestTrips searchQueryState={setLatestTripSearch} />

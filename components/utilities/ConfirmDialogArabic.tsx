@@ -52,7 +52,7 @@ const ConfirmDialogArabic: React.FC<ConfirmDialogProps> = ({
             className="bg-gray-200 text-black w-[194px] font-semibold"
             onClick={onCancel}
           >
-            أغلاق
+            أغـلاق
           </Button>
         </DialogActions>
       </div>

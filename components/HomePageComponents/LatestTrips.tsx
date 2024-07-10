@@ -26,7 +26,7 @@ const LatestTrips = ({ searchQueryState }: any) => {
           </div>
         </div>
         <div className="flex justify-end items-center w-1/2 flex-1">
-          <button
+          {/* <button
             onClick={test}
             type="button"
             className=" border border-gray-300 text-black bg-white  focus:ring-gray-500 dark:focus:ring-gray-500 dark:focus:border-gray-500 focus:border-gray-500 hover:text-white hover:bg-gray-400 font-medium rounded-lg text-sm px-5 py-4 text-center me-2 "
@@ -35,7 +35,7 @@ const LatestTrips = ({ searchQueryState }: any) => {
               <FontAwesomeIcon className="" icon={faFile} />
             </span>
             طباعة و اصدار الفاتورة
-          </button>
+          </button> */}
           <div className="w-1/2 mx-4 ">
             <form className="">
               <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
