@@ -9,6 +9,7 @@ import { API_BASE_URL } from "@configs/envs";
 import axios from "axios";
 import { useRouter } from "next/router";
 import ConfirmDialogArabic from "@components/utilities/ConfirmDialogArabic";
+import EditeInvoiceModal from "./EditeInvoiceModal";
 
 const MainHome = ({
   mainData,
@@ -29,6 +30,20 @@ const MainHome = ({
   // const [dialogMessage, setDialogMessage] = useState("");
   const [isLoadingPrintInvoice, setIsLoadingPrintInvoice] = useState(false);
   const [isLoadingPrintTicket, setIsLoadingPrintTicket] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleCancelDialog = () => {
     setDialogOpen(false);
@@ -108,7 +123,7 @@ const MainHome = ({
           </div>
           <div className="w-2/3  ">
             <div className="main-btns my-4">
-              <MainBtn BtnsClick={BtnsClick} />
+              <MainBtn BtnsClick={BtnsClick} openModal={openModal} />
             </div>
             <div className="main-forms flex flex-wrap lg:flex-nowrap">
               <div className="lg:w-1/3 w-full lg:ml-4">
@@ -148,6 +163,13 @@ const MainHome = ({
         message={dialogMessage}
         onCancel={handleCancelDialog}
       />
+      {isModalOpen && (
+        <EditeInvoiceModal
+          handleModalClick={handleModalClick}
+          openModal={openModal}
+          closeModal={closeModal}
+        />
+      )}
     </>
   );
 };

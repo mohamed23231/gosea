@@ -4,16 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import { GoPencil } from "react-icons/go";
 import axios from "axios";
 import { API_BASE_URL } from "@configs/envs";
+import { useRouter } from "next/router";
 
 const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<any>(null);
+  const router = useRouter();
+
   useEffect(() => {
     const handleKeyPress = (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault(); // Prevent form submission on Enter key
+        inputRef.current.value = searchQuery;
+        searchBarCodeMethod(searchQuery);
+
         setSearchQuery(""); // Clear the search query on Enter key press
       } else {
         setSearchQuery((prevQuery) => prevQuery + event.key); // Append the key press to the search query
@@ -25,7 +31,7 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
     return () => {
       window.removeEventListener("keypress", handleKeyPress);
     };
-  }, []);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -35,24 +41,19 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
 
   const handleSearch = () => {
     inputRef.current.value = searchQuery;
-    printTicket(searchQuery);
+    searchBarCodeMethod(searchQuery);
     setSearchQuery("");
     // Implement search action here
 
     console.log("Search triggered:", searchQuery);
   };
 
-  const searchBarCode = () => {
-    // Implement print action here
-    console.log("Print triggered");
-  };
-
   const handlePrint = () => {
     // Implement print action here
-    console.log("Print triggered");
+    console.log("Print triggered", searchQuery);
   };
 
-  const printTicket = async (ticket: any) => {
+  const searchBarCodeMethod = async (ticket: any) => {
     try {
       setIsLoading(true);
       const response = await axios.get(
@@ -61,10 +62,32 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
       console.log(response);
       setData(response.data);
       console.log(data.order);
-      // router.push({
-      //   pathname: "/print",
-      //   query: { printInvoiceForm: JSON.stringify(printData) },
-      // });
+    } catch (error: any) {
+      setDialogMessage(error?.response?.data?.message);
+      setDialogOpen(true);
+      console.log("error from fetching home data", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const printFromBarcod = async (ticket: any) => {
+    try {
+      setIsLoading(true);
+      const response = await axios.post(
+        `${API_BASE_URL}/admin_marsa/CreateInvoice`,
+        {
+          barcode: ticket,
+        }
+      );
+      console.log(response);
+      setData(response.data);
+      console.log(data.order);
+      const printData = response.data;
+      router.push({
+        pathname: "/print",
+        query: { printInvoiceForm: JSON.stringify(printData) },
+      });
     } catch (error: any) {
       setDialogMessage(error?.response?.data?.message);
       setDialogOpen(true);
@@ -76,7 +99,7 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
 
   return (
     <>
-      <div className="payment-info px-4">
+      <div className="payment-info px-4 ">
         <div className="info my-4">
           <h2 style={{ color: "#415A77" }} className="text-2xl font-semibold">
             الشاشة الرئيسيه
@@ -129,7 +152,7 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
             </div>
           </div>
         </div>
-        <div className="pay-info-form mt-4 mini-boats bg-white border rounded-lg p-2">
+        <div className="pay-info-form mt-4 mini-boats bg-gray-100 border rounded-lg p-2">
           <div>
             <p style={{ fontSize: "15px" }} className="font-semibold my-2">
               بيانات الدفع
@@ -166,14 +189,14 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
                   type="search"
                   id="default-search"
                   className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500"
-                  placeholder="ابحث"
+                  placeholder="ابحث بإستخدام الباركود"
                 />
               </div>
             </form>
           </div>
         </div>
         <div className="invoice-info">
-          {data && (
+          {data ? (
             <>
               {" "}
               <div className="flex justify-between items-center">
@@ -258,6 +281,29 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
                   0{" "}
                 </p>
               </div> */}
+            </>
+          ) : (
+            <>
+              <div className="min-h-[600px] flex justify-center items-center flex-col border-x border-b border-gray-400 rounded-lg">
+                <div
+                  style={{ borderColor: "#D0D5DD" }}
+                  className="w-14 h-14 border  flex  justify-center items-center rounded-lg mb-10"
+                >
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="text-gray-500 dark:text-gray-400 "
+                    style={{ width: "26px", height: "26px" }}
+                  />
+                </div>
+                <div className="flex flex-col items-center mb-8 space-y-2">
+                  <p className="text-sm text-gray-600 text-center">
+                    قم بالبحث بإستخدام الباركود الخاص بالفاتورة
+                  </p>
+                  <p className="text-base text-gray-900 font-medium">
+                    ابحث عن فاتورة
+                  </p>
+                </div>
+              </div>
             </>
           )}
         </div>
