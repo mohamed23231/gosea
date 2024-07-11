@@ -10,6 +10,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import ConfirmDialogArabic from "@components/utilities/ConfirmDialogArabic";
 import EditeInvoiceModal from "./EditeInvoiceModal";
+import { faBarcode, faFileInvoice } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 
 const MainHome = ({
   mainData,
@@ -30,7 +32,10 @@ const MainHome = ({
   // const [dialogMessage, setDialogMessage] = useState("");
   const [isLoadingPrintInvoice, setIsLoadingPrintInvoice] = useState(false);
   const [isLoadingPrintTicket, setIsLoadingPrintTicket] = useState(false);
+  const [isLoadingCaptainAttend, setIsLoadingCaptainAttend] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const notifyErr = (message: string) => toast.error(`${message}`);
+  const notifySuccess = (message: string) => toast.error(`${message}`);
 
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -66,20 +71,31 @@ const MainHome = ({
   console.log(latestTripSearch);
 
   const printInvoise = async (barcode: any) => {
+    if (!barcode) {
+      notifyErr("الرجاء التأكد من كتابه كود الفاتوره");
+      return;
+    }
+
     try {
       setIsLoadingPrintInvoice(true);
       const response = await axios.get(
         `${API_BASE_URL}/admin_marsa/PrintInvoice?barcode=${barcode}`
       );
       console.log(response);
-      const printData = response.data;
+      let printData = response.data;
+      printData.devType = "invoice";
       router.push({
         pathname: "/print",
         query: { printInvoiceForm: JSON.stringify(printData) },
       });
     } catch (error: any) {
-      setDialogMessage(error?.response?.data?.message);
-      setDialogOpen(true);
+      console.log(error?.response?.data?.message);
+      if (error.response.status != 200) {
+        setDialogMessage(
+          "كود الفاتوره خطأ أرجو التأكد من الكود والمحاولة مرة أخرى"
+        );
+        setDialogOpen(true);
+      }
       console.log("error from fetching home data", error);
     } finally {
       setIsLoadingPrintInvoice(false);
@@ -87,23 +103,58 @@ const MainHome = ({
   };
 
   const printTicket = async (ticket: any) => {
+    if (!ticket) {
+      notifyErr("الرجاء التأكد من كتابه كود التذكره");
+      return;
+    }
+
     try {
       setIsLoadingPrintTicket(true);
       const response = await axios.get(
         `${API_BASE_URL}/admin_marsa/GETOrder?barcode=${ticket}`
       );
       console.log(response);
-      const printData = response.data;
+      let printData = response.data;
+      printData.devType = "ticket";
       router.push({
         pathname: "/print",
         query: { printInvoiceForm: JSON.stringify(printData) },
       });
     } catch (error: any) {
-      setDialogMessage(error?.response?.data?.message);
-      setDialogOpen(true);
+      console.log(error?.response?.data?.message);
+      if (error.response.status != 200) {
+        setDialogMessage(
+          "كود التذكرة خطأ أرجو التأكد من الكود والمحاولة مرة أخرى"
+        );
+        setDialogOpen(true);
+      }
       console.log("error from fetching home data", error);
     } finally {
       setIsLoadingPrintTicket(false);
+    }
+  };
+
+  const captainAttends = async (qrNumber: any) => {
+    if (!qrNumber) {
+      notifyErr("الرجاء التأكد من كتابه الكود");
+      return;
+    }
+    try {
+      setIsLoadingCaptainAttend(true);
+      const response = await axios.post(
+        `https://gosea.app/SetCaptainInQueue/`,
+        {
+          qrcode: qrNumber,
+        }
+      );
+      console.log(response);
+    } catch (error: any) {
+      if (error.response.status != 200) {
+        notifyErr("برجاء أعادة تحميل الصفحه");
+      }
+      console.log("error from fetching home data", error);
+    } finally {
+      setIsLoadingCaptainAttend(false);
     }
   };
 
@@ -128,6 +179,9 @@ const MainHome = ({
             <div className="main-forms flex flex-wrap lg:flex-nowrap">
               <div className="lg:w-1/3 w-full lg:ml-4">
                 <PrintForms
+                  backgroundColor={"#b9e6fe"}
+                  borderColor={"#e0f2fe"}
+                  color={"#0086c9"}
                   isLoading={isLoadingPrintTicket}
                   formSubmit={printTicket}
                   formName={"طباعة تذكرة"}
@@ -136,6 +190,10 @@ const MainHome = ({
               </div>
               <div className="lg:w-1/3 w-full">
                 <PrintForms
+                  icon={faFileInvoice}
+                  backgroundColor={"#E9D7FE"}
+                  borderColor={"#F4EBFF"}
+                  color={"#7F56D9"}
                   isLoading={isLoadingPrintInvoice}
                   formSubmit={printInvoise}
                   formName={"طباعة فاتورة"}
@@ -144,9 +202,14 @@ const MainHome = ({
               </div>
               <div className="lg:w-1/3 w-full">
                 <PrintForms
-                  formSubmit={test}
+                  icon={faBarcode}
+                  backgroundColor={"#C6CED6"}
+                  borderColor={"#ECEFF1"}
+                  color={"#415A77"}
+                  formSubmit={captainAttends}
                   formName={"تحضير القوارب"}
                   buttoneName="تحضير"
+                  isLoading={isLoadingCaptainAttend}
                 />
               </div>
             </div>

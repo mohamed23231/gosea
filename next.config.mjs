@@ -4,6 +4,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_BASE_URL: "https://gosea.app",
   },
+  output: "export",
 };
 
 export default nextConfig;

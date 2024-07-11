@@ -163,7 +163,7 @@ const SeaTripTable = ({ tripTable, searchResult }: any) => {
                   </div>
                 </td>
                 <td className="px-6 py-4">{trip.client_name}</td>
-                <td className="px-6 py-4">{trip.client_phone}</td>
+                <td className="px-6 py-4">{trip.client_phone ?? "لا يوجد"}</td>
                 <td className="px-6 py-4">{trip.boat}</td>
                 <td className="px-6 py-4">{trip.peoples}</td>
                 <td className="px-6 py-4">{formatDate(trip.updated_at)}</td>

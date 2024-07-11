@@ -3,6 +3,7 @@ import { API_BASE_URL } from "@configs/envs";
 import router from "next/router";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Homepage = () => {
   const [mainHomeData, setMainHomeData] = useState([]);
@@ -32,11 +33,19 @@ const Homepage = () => {
           number: number,
         }
       );
-      mainHomeMainData();
+      // mainHomeMainData();
       console.log(response);
+      const printData = response.data;
+      console.log(printData);
+      router.push({
+        pathname: "/print",
+        query: { printInvoiceForm: JSON.stringify(printData) },
+      });
     } catch (error: any) {
-      setDialogMessage(error?.response?.data?.message);
-      setDialogOpen(true);
+      if (error.response.status != 200) {
+        setDialogMessage("لا يوجد كباتن متاحين بالوقت الحالي");
+        setDialogOpen(true);
+      }
 
       console.log("error from fetching home data", error);
     } finally {

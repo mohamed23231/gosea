@@ -5,6 +5,7 @@ import { GoPencil } from "react-icons/go";
 import axios from "axios";
 import { API_BASE_URL } from "@configs/envs";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,23 +13,72 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<any>(null);
   const router = useRouter();
+  const notifyErr = (message: string) => toast.error(`${message}`);
+  const notifySuccess = (message: string) => toast.error(`${message}`);
+
+  // useEffect(() => {
+  //   const handleKeyPress = async (event: any) => {
+  //     if (event.key === "Enter") {
+  //       event.preventDefault(); // Prevent form submission on Enter key
+  //       // inputRef.current.value = searchQuery;
+  //       await searchBarCodeMethod(searchQuery);
+  //       setSearchQuery(""); // Clear the search query on Enter key press
+  //     } else {
+  //       setSearchQuery((prevQuery) => prevQuery + event.key); // Append the key press to the search query
+  //     }
+  //   };
+
+  //   const handleFocus = () => {
+  //     window.addEventListener("keypress", handleKeyPress);
+  //   };
+
+  //   const handleBlur = () => {
+  //     window.removeEventListener("keypress", handleKeyPress);
+  //   };
+
+  //   inputRef.current.addEventListener("focus", handleFocus);
+  //   inputRef.current.addEventListener("blur", handleBlur);
+  //   return () => {
+  //     inputRef.current.removeEventListener("focus", handleFocus);
+  //     inputRef.current.removeEventListener("blur", handleBlur);
+  //     window.removeEventListener("keypress", handleKeyPress);
+  //   };
+
+  //   // window.addEventListener("keypress", handleKeyPress);
+
+  //   // return () => {
+  //   //   window.removeEventListener("keypress", handleKeyPress);
+  //   // };
+  // }, [searchQuery]);
 
   useEffect(() => {
-    const handleKeyPress = (event: any) => {
+    const handleKeyPress = async (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault(); // Prevent form submission on Enter key
-        inputRef.current.value = searchQuery;
-        searchBarCodeMethod(searchQuery);
-
-        setSearchQuery(""); // Clear the search query on Enter key press
+        await handleSearch();
       } else {
         setSearchQuery((prevQuery) => prevQuery + event.key); // Append the key press to the search query
       }
     };
 
-    window.addEventListener("keypress", handleKeyPress);
+    const handleFocus = () => {
+      window.addEventListener("keypress", handleKeyPress);
+    };
+
+    const handleBlur = () => {
+      window.removeEventListener("keypress", handleKeyPress);
+    };
+
+    if (inputRef.current) {
+      inputRef.current.addEventListener("focus", handleFocus);
+      inputRef.current.addEventListener("blur", handleBlur);
+    }
 
     return () => {
+      if (inputRef.current) {
+        inputRef.current.removeEventListener("focus", handleFocus);
+        inputRef.current.removeEventListener("blur", handleBlur);
+      }
       window.removeEventListener("keypress", handleKeyPress);
     };
   }, [searchQuery]);
@@ -40,31 +90,46 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
   }, []);
 
   const handleSearch = () => {
-    inputRef.current.value = searchQuery;
+    // inputRef.current.value = searchQuery;
     searchBarCodeMethod(searchQuery);
-    setSearchQuery("");
-    // Implement search action here
 
+    // setSearchQuery("");
+    // Implement search action here
     console.log("Search triggered:", searchQuery);
   };
 
   const handlePrint = () => {
     // Implement print action here
+    printFromBarcod(searchQuery);
+
     console.log("Print triggered", searchQuery);
   };
 
   const searchBarCodeMethod = async (ticket: any) => {
+    if (!ticket) {
+      notifyErr("الرجاء التأكد من كتابه كود التذكره");
+      return;
+    }
+
+    console.log(ticket);
+
     try {
       setIsLoading(true);
       const response = await axios.get(
         `${API_BASE_URL}/admin_marsa/GETOrder?barcode=${ticket}`
       );
-      console.log(response);
+      console.log("response from payInfo", response);
       setData(response.data);
-      console.log(data.order);
+      console.log(response.data);
+      console.log(data);
     } catch (error: any) {
-      setDialogMessage(error?.response?.data?.message);
-      setDialogOpen(true);
+      if (error.response.status != 200) {
+        setDialogMessage(
+          "الكود غير صحيح أرجو التأكد من الكود والمحاولة مرة أخرى"
+        );
+        setDialogOpen(true);
+      }
+      setData(null);
       console.log("error from fetching home data", error);
     } finally {
       setIsLoading(false);
@@ -72,25 +137,33 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
   };
 
   const printFromBarcod = async (ticket: any) => {
+    if (!ticket) {
+      notifyErr("الرجاء التأكد من كتابه كود التذكره");
+      return;
+    }
     try {
       setIsLoading(true);
       const response = await axios.post(
         `${API_BASE_URL}/admin_marsa/CreateInvoice`,
         {
-          barcode: ticket,
+          barcode: +ticket,
         }
       );
       console.log(response);
-      setData(response.data);
-      console.log(data.order);
+      // setData(response.data);
       const printData = response.data;
+      console.log(printData);
       router.push({
         pathname: "/print",
         query: { printInvoiceForm: JSON.stringify(printData) },
       });
     } catch (error: any) {
-      setDialogMessage(error?.response?.data?.message);
-      setDialogOpen(true);
+      if (error.response.status != 200) {
+        setDialogMessage(
+          "الكود غير صحيح أرجو التأكد من الكود والمحاولة مرة أخرى"
+        );
+        setDialogOpen(true);
+      }
       console.log("error from fetching home data", error);
     } finally {
       setIsLoading(false);
@@ -142,9 +215,9 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
             <div className="icon flex items-center">
               <FontAwesomeIcon
                 style={{
-                  color: "#DC6803 ",
-                  backgroundColor: "#FFFAEB",
-                  borderColor: "feefc7",
+                  color: "#039855 ",
+                  backgroundColor: "#ECFDF3",
+                  borderColor: "#D1FADF",
                 }}
                 className={"mx-1 block p-1 rounded-full bg-mainColor border-3"}
                 icon={faShip}
@@ -168,14 +241,14 @@ const PayInfo = ({ mainData, setDialogOpen, setDialogMessage }: any) => {
                 Search
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 end-2 flex items-center pe-3">
+                <div className="absolute inset-y-0 end-5 flex items-center pe-3">
                   <FontAwesomeIcon
                     icon={faSearch}
                     className="w-4 h-4 text-gray-500 dark:text-gray-400 cursor-pointer"
                     onClick={handleSearch}
                   />
                 </div>
-                <div className="absolute inset-y-0 end-10 flex items-center pe-3">
+                <div className="absolute inset-y-0 end-14 flex items-center pe-3">
                   <FontAwesomeIcon
                     icon={faPrint}
                     className="w-4 h-4 text-gray-500 dark:text-gray-400 cursor-pointer"

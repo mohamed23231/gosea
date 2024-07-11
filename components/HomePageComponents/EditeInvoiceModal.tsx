@@ -8,6 +8,11 @@ import { MainHomeEditeInvoice } from "@app_types/interfaces/forms_schemas/goSea/
 import { MainHomeEditeInvoiceSchema } from "@zod_schemas/goSea/MainHomeEditeInvoiceSchema";
 import axios from "axios";
 import { API_BASE_URL } from "@configs/envs";
+import { faFileInvoice } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import toast from "react-hot-toast";
+import router from "next/router";
+
 const EditeInvoiceModal = ({
   handleModalClick,
   openModal,
@@ -26,6 +31,7 @@ const EditeInvoiceModal = ({
   const [captainsList, setCaptainsList] = useState<any[]>([]);
   const [filteredBoats, setFilteredBoats] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const notify = (message: string) => toast.error(`${message}`);
 
   useEffect(() => {
     const getCaptainsInfo = async () => {
@@ -34,7 +40,8 @@ const EditeInvoiceModal = ({
         const response = await axios.get(
           `${API_BASE_URL}/admin_marsa/ChangeInvoiceCaptain`
         );
-        setCaptainsList(response.data);
+        console.log(response.data);
+        setCaptainsList(response.data.captains);
       } catch (error: any) {
         console.log("error from fetching captains data", error);
       } finally {
@@ -55,6 +62,10 @@ const EditeInvoiceModal = ({
   };
 
   const onSubmit = async (data: MainHomeEditeInvoice) => {
+    if (!data.barecode || !data.boat) {
+      notify("أرجو التأكد من ملئ البيانات");
+      return;
+    }
     try {
       setIsLoading(true);
       // Forming the data object to send
@@ -65,9 +76,17 @@ const EditeInvoiceModal = ({
 
       // Example Axios request
       const response = await axios.post(
-        `${API_BASE_URL}/ChangeInvoiceCaptain`,
+        `${API_BASE_URL}/admin_marsa/ChangeInvoiceCaptain`,
         requestData
       );
+      console.log(response);
+      const printData = response.data;
+      console.log(printData);
+      router.push({
+        pathname: "/print",
+        query: { printInvoiceForm: JSON.stringify(printData) },
+      });
+
       console.log("Axios response:", response);
       // Handle success or further actions
     } catch (error) {
@@ -89,8 +108,21 @@ const EditeInvoiceModal = ({
         openModal ? "block" : "hidden"
       }`}
     >
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-xl font-medium text-gray-900">Add Employee</h3>
+      <div className="bg-white rounded-lg shadow p-6 w-[400px]">
+        <div>
+          <FontAwesomeIcon
+            style={{
+              backgroundColor: "#b9e6fe",
+              borderColor: "#e0f2fe",
+              color: "#0086c9",
+            }}
+            className={" mx-1 block p-2 rounded-full  border-3 "}
+            icon={faFileInvoice}
+          />
+        </div>
+        <h3 className="text-xl font-medium text-gray-900 mb-[32px]">
+          تعديل فاتورة
+        </h3>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <div className="input-containers flex flex-wrap">
             <div className="w-full p-2">
@@ -112,15 +144,15 @@ const EditeInvoiceModal = ({
                 htmlFor="boatType"
                 className="block mb-2 text-sm font-medium text-gray-900"
               >
-                Boat Type
+                نوع القارب
               </label>
               <select
                 id="boatType"
                 {...register("boatType")}
                 onChange={(e) => handleBoatTypeChange(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               >
-                <option value="">Select Boat Type</option>
+                <option value="">أختر نوع القارب</option>
                 {Array.isArray(captainsList) ? (
                   captainsList.map((captain) => (
                     <option key={captain.id} value={captain.boat_type}>
@@ -140,30 +172,36 @@ const EditeInvoiceModal = ({
                 htmlFor="boat"
                 className="block mb-2 text-sm font-medium text-gray-900"
               >
-                Boat
+                القارب
               </label>
               <select
                 id="boat"
                 {...register("boat")}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               >
-                <option value="">Select Boat</option>
+                <option value="">أختر القارب</option>
                 {filteredBoats.map((captain) => (
                   <option key={captain.id} value={captain.id}>
-                    {captain.name}
+                    {captain.boat}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-around mt-[32px]">
             <button
-              className="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+              className="w-[170px] text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
               type="submit"
               disabled={isLoading}
             >
-              {isLoading ? <Spinner size="sm" color="success" /> : "Submit"}
+              {isLoading ? <Spinner size="sm" color="primary" /> : "طباعة"}
+            </button>
+            <button
+              className="w-[170px] text-black bg-white border border-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-grau-900 font-medium rounded-lg text-sm "
+              onClick={closeModal}
+            >
+              {"إلغاء"}
             </button>
           </div>
         </form>

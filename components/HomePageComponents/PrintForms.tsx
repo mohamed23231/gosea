@@ -13,7 +13,16 @@ import {
 import { Spinner } from "@nextui-org/spinner";
 import { useRouter } from "next/router";
 
-const PrintForms = ({ formName, formSubmit, buttoneName, isLoading }: any) => {
+const PrintForms = ({
+  formName,
+  formSubmit,
+  buttoneName,
+  isLoading,
+  icon = faTicket,
+  color,
+  borderColor,
+  backgroundColor,
+}: any) => {
   const {
     register,
     setError,
@@ -44,12 +53,12 @@ const PrintForms = ({ formName, formSubmit, buttoneName, isLoading }: any) => {
               </label>
               <FontAwesomeIcon
                 style={{
-                  backgroundColor: "#b9e6fe",
-                  borderColor: "#e0f2fe",
-                  color: "#0086c9",
+                  backgroundColor: backgroundColor,
+                  borderColor: borderColor,
+                  color: color,
                 }}
                 className={" mx-1 block p-2 rounded-full  border-3 "}
-                icon={faTicket}
+                icon={icon}
               />
             </div>
           </div>
