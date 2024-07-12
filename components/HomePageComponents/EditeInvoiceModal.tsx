@@ -27,11 +27,35 @@ const EditeInvoiceModal = ({
   } = useForm<MainHomeEditeInvoice>({
     resolver: zodResolver(MainHomeEditeInvoiceSchema),
   });
+  const koko = [
+    {
+      id: 222,
+      name: "عبد المجيد فلمبان",
+      number: 1,
+      boat: "زعيم البحار",
+      boat_type: "قوارب للنزهة",
+    },
+    {
+      id: 333,
+      name: " المجيد فلمبان",
+      number: 1,
+      boat: " البحار",
+      boat_type: "قوارب للنزهة",
+    },
+    {
+      id: 532,
+      name: "  فلمبان",
+      number: 1,
+      boat: "زعيم ",
+      boat_type: "قوارب صغير",
+    },
+  ];
   const formErrorHandler = useFormErrorHandler<MainHomeEditeInvoice>(setError);
   const [captainsList, setCaptainsList] = useState<any[]>([]);
   const [filteredBoats, setFilteredBoats] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const notify = (message: string) => toast.error(`${message}`);
+  const [boatTypes, setBoatTypes] = useState<any[]>([]);
 
   useEffect(() => {
     const getCaptainsInfo = async () => {
@@ -42,6 +66,14 @@ const EditeInvoiceModal = ({
         );
         console.log(response.data);
         setCaptainsList(response.data.captains);
+        // setCaptainsList(koko);
+        const types = Array.from(
+          new Set(
+            response.data.captains.map((captain: any) => captain.boat_type)
+            // koko.map((captain: any) => captain.boat_type)
+          )
+        );
+        setBoatTypes(types);
       } catch (error: any) {
         console.log("error from fetching captains data", error);
       } finally {
@@ -153,15 +185,15 @@ const EditeInvoiceModal = ({
                 className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               >
                 <option value="">أختر نوع القارب</option>
-                {Array.isArray(captainsList) ? (
-                  captainsList.map((captain) => (
-                    <option key={captain.id} value={captain.boat_type}>
-                      {captain.boat_type}
+                {Array.isArray(boatTypes) ? (
+                  boatTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
                     </option>
                   ))
                 ) : (
                   <option value="" disabled>
-                    No captains available
+                    No boat types available
                   </option>
                 )}
               </select>
