@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import QueueModalConfirm from "@components/GeneralQueueCaptain/QueueModalConfrm"; // Adjust path as needed
 
 const GeneralBoats = dynamic(
   () => import("@components/GeneralQueueCaptain/GeneralBoats"),
@@ -11,9 +8,9 @@ const GeneralBoats = dynamic(
   }
 );
 
-const IndexPage = () => {
-  const [dialogMessage, setDialogMessage] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+const IndexPage: React.FC = () => {
+  const [dialogMessage, setDialogMessage] = useState<string>("");
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const handleConfirmDialogOpen = (message: string) => {
     setDialogMessage(message);
@@ -25,9 +22,8 @@ const IndexPage = () => {
   };
 
   const handleConfirm = () => {
-    // Implement your logic here for what happens when confirmed
     console.log("Confirmed!");
-    handleConfirmDialogClose(); // Close the dialog after confirmation
+    handleConfirmDialogClose();
   };
 
   return (
@@ -39,21 +35,14 @@ const IndexPage = () => {
         </p>
       </header>
 
-      <div className="flex space-x-6 justify-between">
-        <DndProvider backend={HTML5Backend}>
-          <GeneralBoats
-            title="القوارب الخاصة"
-            confirmDialog={handleConfirmDialogOpen} // Pass handler to GeneralBoats
-          />
-        </DndProvider>
+      <div className="lg:flex space-x-6 lg:justify-between ">
+        <div className="mx-5 mt-5 lg:mt-0">
+          <GeneralBoats title="قارب نزهة" />
+        </div>
+        <div className="mx-5 mt-5 lg:mt-0">
+          <GeneralBoats title="قارب صغير" />
+        </div>
       </div>
-
-      <QueueModalConfirm
-        open={isDialogOpen}
-        message={dialogMessage}
-        onCancel={handleConfirmDialogClose}
-        onConfirm={handleConfirm}
-      />
     </div>
   );
 };
