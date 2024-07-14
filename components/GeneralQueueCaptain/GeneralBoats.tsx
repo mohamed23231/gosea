@@ -29,17 +29,33 @@ const GeneralBoats = ({ title }: any) => {
   const [initialOrderRows, setInitialOrderRows] = useState([...initialRows]);
   const [latestOrderedRows, setLatestOrderedRows] = useState([...initialRows]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const [initialPosition, setInitialPosition] = useState(0);
-  const [droppedPosition, setDroppedPosition] = useState(0);
+  const [initialPosition, setInitialPosition] = useState(0); // State for initial position
+  const [droppedPosition, setDroppedPosition] = useState(0); // State for dropped position
+
+  // Handlers for drag start and end
+  const handleDragStart = (rowId: string) => {
+    document.getElementById(`row-${rowId}`)?.classList.add("dragging");
+  };
+
+  const handleDragEnd = (rowId: string) => {
+    document.getElementById(`row-${rowId}`)?.classList.remove("dragging");
+  };
 
   const moveRow = (dragIndex: number, hoverIndex: number) => {
     const draggedRow = latestOrderedRows[dragIndex];
     const updatedRows = [...latestOrderedRows];
+
+    // Remove the dragged row from its original position
     updatedRows.splice(dragIndex, 1);
+
+    // Insert the dragged row at the new position
     updatedRows.splice(hoverIndex, 0, draggedRow);
 
+    // Update the latest ordered rows
     setLatestOrderedRows(updatedRows);
+    setInitialPosition(dragIndex); // Set initial position for confirmation message
+    setDroppedPosition(hoverIndex + 1); // Set dropped position for confirmation message
+    setIsDialogOpen(true); // Open dialog on drop
   };
 
   const Row = ({ row, index }: { row: any; index: number }) => {
@@ -62,26 +78,26 @@ const GeneralBoats = ({ title }: any) => {
         }
 
         moveRow(dragIndex, hoverIndex);
-        setDraggingIndex(null); // Reset dragging index
-        setInitialPosition(dragIndex); // Set initial position for confirmation message
-        setDroppedPosition(hoverIndex + 1); // Set dropped position for confirmation message
-        setIsDialogOpen(true); // Open dialog on drop
       },
     });
 
     const rowStyle = {
       opacity: isDragging ? 0.5 : 1,
-      backgroundColor: isDragging ? "#F87171" : "transparent", // Red background when dragging
-      border: isDragging ? "2px dashed #000" : "none", // Dashed border when dragging
-      cursor: "move", // Change cursor to indicate draggable
+      backgroundColor: isDragging ? "#F87171" : "transparent",
+      border: isDragging ? "2px dashed #000" : "none",
+      cursor: "move",
+      transition:
+        "opacity 0.2s ease, background-color 0.2s ease, border 0.2s ease", // CSS transitions
     };
 
     return (
       <tr
+        id={`row-${row.id}`}
         ref={(node) => {
           drag(drop(node));
-          if (isDragging) {
-            setDraggingIndex(index);
+          if (node) {
+            node.addEventListener("dragstart", () => handleDragStart(row.id));
+            node.addEventListener("dragend", () => handleDragEnd(row.id));
           }
         }}
         style={rowStyle}
