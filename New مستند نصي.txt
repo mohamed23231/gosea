@@ -1,45 +1,21 @@
 import React, { useState } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import QueueModalConfirm from "@components/GeneralQueueCaptain/QueueModalConfrm"; // Adjust path as needed
 
 const GeneralBoats = ({ title }: any) => {
-  const initialRows = [
-    {
-      id: "1",
-      name: "محمد علي",
-      category: "ربان السفينة",
-      phone: "0555123456",
-    },
-    {
-      id: "2",
-      name: "أميرة خالد",
-      category: "ملاح البحار",
-      phone: "0500987654",
-    },
-    {
-      id: "3",
-      name: "جمال سعد",
-      category: "كابتن القارب",
-      phone: "0567788990",
-    },
+  const [rows, setRows] = useState([
+    { id: "1", name: "محمد علي", category: "ربان السفينة", phone: "0555123456" },
+    { id: "2", name: "أميرة خالد", category: "ملاح البحار", phone: "0500987654" },
+    { id: "3", name: "جمال سعد", category: "كابتن القارب", phone: "0567788990" },
     // Add more rows as needed
-  ];
-
-  const [initialOrderRows, setInitialOrderRows] = useState([...initialRows]);
-  const [latestOrderedRows, setLatestOrderedRows] = useState([...initialRows]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const [initialPosition, setInitialPosition] = useState(0);
-  const [droppedPosition, setDroppedPosition] = useState(0);
+  ]);
 
   const moveRow = (dragIndex: number, hoverIndex: number) => {
-    const draggedRow = latestOrderedRows[dragIndex];
-    const updatedRows = [...latestOrderedRows];
+    const draggedRow = rows[dragIndex];
+    const updatedRows = [...rows];
     updatedRows.splice(dragIndex, 1);
     updatedRows.splice(hoverIndex, 0, draggedRow);
-
-    setLatestOrderedRows(updatedRows);
+    setRows(updatedRows);
   };
 
   const Row = ({ row, index }: { row: any; index: number }) => {
@@ -53,7 +29,7 @@ const GeneralBoats = ({ title }: any) => {
 
     const [, drop] = useDrop({
       accept: "ROW",
-      drop: (item: any, monitor) => {
+      hover: (item: any, monitor) => {
         const dragIndex = item.index;
         const hoverIndex = index;
 
@@ -62,30 +38,14 @@ const GeneralBoats = ({ title }: any) => {
         }
 
         moveRow(dragIndex, hoverIndex);
-        setDraggingIndex(null); // Reset dragging index
-        setInitialPosition(dragIndex); // Set initial position for confirmation message
-        setDroppedPosition(hoverIndex + 1); // Set dropped position for confirmation message
-        setIsDialogOpen(true); // Open dialog on drop
+        item.index = hoverIndex;
       },
     });
 
-    const rowStyle = {
-      opacity: isDragging ? 0.5 : 1,
-      backgroundColor: isDragging ? "#F87171" : "transparent", // Red background when dragging
-      border: isDragging ? "2px dashed #000" : "none", // Dashed border when dragging
-      cursor: "move", // Change cursor to indicate draggable
-    };
+    const opacity = isDragging ? 0.5 : 1;
 
     return (
-      <tr
-        ref={(node) => {
-          drag(drop(node));
-          if (isDragging) {
-            setDraggingIndex(index);
-          }
-        }}
-        style={rowStyle}
-      >
+      <tr ref={(node) => drag(drop(node))} style={{ opacity }}>
         <td className="p-2">
           <span className="inline-block w-[28px] h-[28px] bg-gray-200 rounded-full flex items-center justify-center">
             {index + 1}
@@ -108,14 +68,8 @@ const GeneralBoats = ({ title }: any) => {
     );
   };
 
-  const handleConfirm = () => {
-    setInitialOrderRows([...latestOrderedRows]); // Apply the latest ordered rows to the initial order
-    setIsDialogOpen(false); // Close the dialog after confirmation
-  };
-
-  const handleCancel = () => {
-    setLatestOrderedRows([...initialOrderRows]); // Revert latest ordered rows to initial order on cancel
-    setIsDialogOpen(false); // Close the dialog if canceled
+  const handleDrop = () => {
+    console.log("Rows after drop:", rows);
   };
 
   return (
@@ -136,23 +90,13 @@ const GeneralBoats = ({ title }: any) => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200 text-xs">
-              {latestOrderedRows.map((row: any, index: number) => (
+              {rows.map((row: any, index: number) => (
                 <Row key={row.id} row={row} index={index} />
               ))}
             </tbody>
           </table>
         </div>
       </div>
-      {isDialogOpen && (
-        <QueueModalConfirm
-          open={isDialogOpen}
-          message={`هل أنت متأكد من نقل ترتيب "${
-            initialOrderRows[initialPosition]?.name
-          }" من ${initialPosition + 1} إلى ${droppedPosition}؟`}
-          onCancel={handleCancel}
-          onConfirm={handleConfirm}
-        />
-      )}
     </DndProvider>
   );
 };
