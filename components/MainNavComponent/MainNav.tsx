@@ -93,6 +93,19 @@ const MainNav = ({ isOpen, toggleSidebar }: any) => {
                 </p>
               </li>
             </Link>
+            <Link
+              href={"/dailyclose"}
+              className=" flex items-center p-4 text-gray-600 hover:bg-gray-100 cursor-pointer"
+            >
+              <li className="flex items-center">
+                <span className="material-icons  ml-3">
+                  <FiBarChart />
+                </span>
+                <p className="" style={{ color: "#34485F" }}>
+                  الاغلاق اليومي{" "}
+                </p>
+              </li>
+            </Link>
           </ul>
         </nav>
       </div>

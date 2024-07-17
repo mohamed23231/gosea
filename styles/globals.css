@@ -118,3 +118,26 @@ html {
 .dragging td {
   transition: opacity 0.2s ease, border 0.2s ease; /* Apply transition to td elements */
 }
+
+.date-picker-container {
+  position: relative;
+}
+
+.custom-date-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 200px; /* Adjust width as needed */
+  margin-bottom: 10px;
+}
+
+.custom-date-input .icon {
+  margin-right: 10px; /* Space between icon and input */
+}
+
+.custom-date-input input[type="date"] {
+  width: 100%;
+  padding-left: 30px; /* Adjust as needed to make space for the icon */
+  box-sizing: border-box;
+  direction: ltr; /* Keep text direction LTR */
+}
